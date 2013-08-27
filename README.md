@@ -42,5 +42,11 @@ Sass files can't currently be concatenated due to the incompatibility of SourceM
 #### Compiling with Compass
 
 If you choose to use compass, change the variable:
+
     var CSSCompiler = 'sass';
+
 to 'compass'. The compiler is already included in your dependencies, so you don't need to do that yourself. It currently doesn't support SourceMaps so if you choose to use compass the map files will not be generated.
+
+* * * * * * * * * *
+
+Feel free to use this code and update it to your own use.
