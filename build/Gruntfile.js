@@ -98,6 +98,7 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks('grunt-contrib-connect');
 	grunt.loadNpmTasks('grunt-contrib-watch');
 	grunt.loadNpmTasks('grunt-concat-sourcemap');
+	grunt.loadNpmTasks('grunt-growl');
 
 
 	/*
@@ -292,6 +293,12 @@ module.exports = function(grunt) {
 				}
 			}
 		},
+		growl : {
+			myMessage : {
+				message : "Hoorah!",
+				title : "The files are updated again."
+			}
+		},
 		
 
 		/**
@@ -301,16 +308,19 @@ module.exports = function(grunt) {
 		 * @type {Object}
 		 */
 		watch: {
+			options: {
+				livereload: true
+			},
 			// If the gruntfile itself changes, update all
 			grunt: {
 				files: ['Gruntfile.js'],
-				tasks: [CSSCompiler + ':dev', 'concat_sourcemap:dev', 'notify:success']
+				tasks: [CSSCompiler + ':dev', 'concat_sourcemap:dev', 'growl:myMessage', 'notify:success']
 			},
 
 			// What to do when JS files change
 			js: {
 				files: [assetsJSPath + '**/*.js'],
-				tasks: ['concat_sourcemap:dev', 'notify:success']
+				tasks: ['concat_sourcemap:dev', 'growl:myMessage', 'notify:success']
 			},
 
 			// What to do when CSS files change
@@ -322,13 +332,13 @@ module.exports = function(grunt) {
 			// What to do when SASS files change
 			sass: {
 				files: [assetsSASSPath + '**/*.scss', buildPath + 'config.rb'],
-				tasks: [CSSCompiler + ':dev', 'notify:success']
+				tasks: [CSSCompiler + ':dev', 'growl:myMessage', 'notify:success'],
 			},
 
 			// Refresh page when views change
 			app: {
 				files: [themePath + '**/*.php'],
-				tasks: ['notify:success']
+				tasks: ['growl:myMessage', 'notify:success']
 			}
 		}
 	});
@@ -352,6 +362,7 @@ module.exports = function(grunt) {
 				'concat_sourcemap:dev',
 				'cssmin:all',
 				'uglify:all',
+				'growl:myMessage',
 				'notify:success'
 			);
 
@@ -359,6 +370,7 @@ module.exports = function(grunt) {
 			grunt.task.run(
 				CSSCompiler + ':dist',
 				'concat_sourcemap:dev',
+				'growl:myMessage',
 				'notify:success'
 			);
 		}
