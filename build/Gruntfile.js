@@ -19,51 +19,20 @@ module.exports = function(grunt) {
 	*/
 	var jsTargets = {
 		'scripts-head': [
-			'js/vendor/jquery/jquery-1.10.2.min.js',
-			'js/vendor/modernizr/modernizr.custom.99789.js'
+			'js/file1.js',
+			'js/file2.js'
 		],
 		'scripts-footer': [
-
-			// Greensock stuff
-			'js/vendor/gsap/minified/TweenLite.min.js',
-			'js/vendor/gsap/minified/TimelineLite.min.js',
-			'js/vendor/gsap/minified/easing/EasePack.min.js',
-			'js/vendor/gsap/minified/jquery.gsap.min.js',
-			'js/vendor/gsap/minified/plugins/CSSPlugin.min.js',
-			'js/vendor/gsap/minified/plugins/CSSRulePlugin.min.js',
-			'js/vendor/gsap/minified/plugins/ColorPropsPlugin.min.js',
-			'js/vendor/gsap/minified/plugins/ScrollToPlugin.min.js',
-
-			// Other libs
-			'js/vendor/sugararray/sugararray.js',
-			'js/vendor/sugarcarousel/sugarCarousel-1.0.js',
-			'js/vendor/gmaps-utils/infobox.js',
-			'js/vendor/eventemitter/EventEmitter.js',
-			'js/vendor/imagesloaded/imagesloaded.js',
-			'js/vendor/querystring/querystring.js',
-
-			// Application stuff
-			'js/general/header.js',
-			'js/general/single-project.js',
-
-			// Blocks
-			'js/blocks/clients.js',
-			'js/blocks/people.js',
-			'js/blocks/projects-all.js',
-			'js/blocks/projects-featured.js',
-			'js/blocks/gallery.js',
-			'js/blocks/map.js',
-			'js/blocks/vertical_tabbed_2col.js'
+			'js/file3.js',
+			'js/file4.js',
+			'js/file5.js'
 		]
 	};
 
-
 	var cssTargets = {
 		'styles': ['sass/styles.scss'],
-		'admin': ['sass/admin.scss'],
-		'tinymce': ['sass/tinymce.scss']
+		'admin': ['sass/admin.scss']
 	};
-
 
 
 	/*
@@ -98,7 +67,19 @@ module.exports = function(grunt) {
 	var cssTempPath = tempPath + 'css/';
 	var jsConcatPath = publicJSPath;
 	var cssConcatPath = publicCSSPath;
-
+	
+	
+	/*
+	|--------------------------------------------------------------------------
+	| Compile sass files with compass or not.
+	|--------------------------------------------------------------------------
+	|
+	| The compass compiler currently doesn't have support for SourceMaps. When 
+	| useCompass is set to the false the sass compiler will be automatically used
+	| and the corresponding map files will be generated.
+	|
+	*/
+	var useCompass = false;
 
 
 	/*
@@ -116,9 +97,12 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks('grunt-contrib-cssmin');
 	grunt.loadNpmTasks('grunt-contrib-uglify');
 	grunt.loadNpmTasks('grunt-contrib-connect');
-	grunt.loadNpmTasks('grunt-regarde');
-	grunt.loadNpmTasks('grunt-contrib-livereload');
+	grunt.loadNpmTasks('grunt-contrib-watch');
 	grunt.loadNpmTasks('grunt-concat-sourcemap');
+	
+	// Deprecated
+	grunt.loadNpmTasks('grunt-regarde');
+	//grunt.loadNpmTasks('grunt-contrib-livereload');
 
 
 
@@ -205,14 +189,11 @@ module.exports = function(grunt) {
 	/**
 	 * Live reload setup
 	 */
-	var path = require('path');
+	/*var path = require('path');
 	var lrSnippet = require('grunt-contrib-livereload/lib/utils').livereloadSnippet;
 	var folderMount = function folderMount(connect, point) {
 		return connect.static(path.resolve(point));
-	};
-
-
-
+	};*/
 
 
 	/*
@@ -287,7 +268,12 @@ module.exports = function(grunt) {
 			}
 		},
 		
-		
+
+		/**
+		 * This is where the selected files are concatenated
+		 * 
+		 * @type {Object}
+		 */
 		concat_sourcemap: {
 			dev: {
 				options: {
@@ -329,8 +315,10 @@ module.exports = function(grunt) {
 		 */
 		notify: {
 			success : {
-				title : 'Hoorah!',
-				message : 'The files are updated again.'
+				options: {
+					title : 'Hoorah!',
+					message : 'The files are updated again.'
+				}
 			}
 		},
 
@@ -339,7 +327,7 @@ module.exports = function(grunt) {
 		 * 
 		 * @type {Object}
 		 */
-		livereload: {
+		/*livereload: {
 			port: 35729 // Default livereload listening port.
 		},
 		connect: {
@@ -351,7 +339,8 @@ module.exports = function(grunt) {
 					}
 				}
 			}
-		},
+		},*/
+		
 
 		/**
 		 * Finally, tell grunt what to do when certain files change.
@@ -359,38 +348,37 @@ module.exports = function(grunt) {
 		 * 
 		 * @type {Object}
 		 */
-		regarde: {
-
+		watch: {
 			// If the gruntfile itself changes, update all
 			grunt: {
 				files: ['Gruntfile.js'],
 				// tasks: ['compass:dev', 'concat:css', 'concat:js', 'livereload', 'notify:success']
-				tasks: ['sass:dev', 'concat:css', 'concat:js', 'livereload', 'notify:success']
+				tasks: ['sass:dev', 'concat:css', 'concat:js', 'notify:success']
 			},
 
 			// What to do when JS files change
 			js: {
 				files: [assetsJSPath + '**/*.js'],
-				tasks: ['concat:js', 'concat_sourcemap:dev', 'livereload', 'notify:success']
+				tasks: ['concat:js', 'concat_sourcemap:dev', 'notify:success']
 			},
 
 			// What to do when CSS files change
 			css: {
 				files: [assetsCSSPath + '**/*.css'],
-				tasks: ['concat:css', 'livereload', 'notify:success']
+				tasks: ['concat:css', 'notify:success']
 			},
 
 			// What to do when SASS files change
 			sass: {
 				files: [assetsSASSPath + '**/*.scss', buildPath + 'config.rb'],
 				// tasks: ['compass:dev', 'concat:css', 'livereload', 'notify:success']
-				tasks: ['sass:dev', 'concat_sourcemap:dev', 'concat:css', 'livereload', 'notify:success']
+				tasks: ['sass:dev', 'concat_sourcemap:dev', 'concat:css', 'notify:success']
 			},
 
 			// Refresh page when views change
 			app: {
 				files: [themePath + '**/*.php'],
-				tasks: ['livereload', 'notify:success']
+				tasks: ['notify:success']
 			}
 		}
 	});
@@ -430,8 +418,6 @@ module.exports = function(grunt) {
 	});
 
 
-
-
 	/**
 	 * Register the default task
 	 * 
@@ -443,7 +429,7 @@ module.exports = function(grunt) {
 	});
 
 
-	grunt.registerTask('watch', function() {
-		grunt.task.run('livereload-start', 'connect', 'regarde');
+	grunt.registerTask('listen', function() {
+		grunt.task.run('watch');
 	});
 };

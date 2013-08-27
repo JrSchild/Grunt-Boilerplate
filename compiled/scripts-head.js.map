@@ -1,0 +1,10 @@
+{
+  "version": 3,
+  "file": "scripts-head.js",
+  "sources": [
+    "../js/file1.js",
+    "../js/file2.js"
+  ],
+  "names": [],
+  "mappings": "AAAA;AACA;AACA,K;;ACFA;AACA;AACA,K"
+}
