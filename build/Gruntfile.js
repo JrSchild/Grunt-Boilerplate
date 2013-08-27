@@ -249,7 +249,8 @@ module.exports = function(grunt) {
 		concat_sourcemap: {
 			dev: {
 				options: {
-					separator: ';\n\n'
+					separator: ';\n\n',
+					sourceRoot: '../'
 				},
 				files: jsFileTargets
 			}
