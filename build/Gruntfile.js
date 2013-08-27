@@ -47,8 +47,8 @@ module.exports = function(grunt) {
 
 	// The public paths
 	var publicPath = '../compiled/';
-	var publicCSSPath = publicPath + '';
-	var publicJSPath = publicPath + '';
+	var publicCSSPath = publicPath + 'css/';
+	var publicJSPath = publicPath + 'js/';
 
 	// The app paths
 	var appPath = '../../';
@@ -93,7 +93,6 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks('grunt-notify');
 	grunt.loadNpmTasks('grunt-contrib-sass');
 	grunt.loadNpmTasks('grunt-contrib-compass');
-	grunt.loadNpmTasks('grunt-contrib-concat');
 	grunt.loadNpmTasks('grunt-contrib-cssmin');
 	grunt.loadNpmTasks('grunt-contrib-uglify');
 	grunt.loadNpmTasks('grunt-contrib-connect');
@@ -198,10 +197,7 @@ module.exports = function(grunt) {
 		 * @type {Object}
 		 */
 		sass: {
-			dist: {
-				
-			},
-			dev: {
+			all: {
 				files: cssFileTargets,
 				options: {
 					sourcemap: 'true'
@@ -230,22 +226,6 @@ module.exports = function(grunt) {
 					cssDir: cssTempPath,
 					config: 'config.rb'
 				}
-			}
-		},
-
-		/**
-		 * This is where the selected files are concatenated
-		 * 
-		 * @type {Object}
-		 */
-		concat: {
-			dist: {
-				options: {
-					separator: ';\n\n'
-				},
-				files: jsFileTargets
-			},
-			css: {
 			}
 		},
 		
@@ -314,13 +294,13 @@ module.exports = function(grunt) {
 			// If the gruntfile itself changes, update all
 			grunt: {
 				files: ['Gruntfile.js'],
-				tasks: [CSSCompiler + ':dev', /*'concat:css', */'concat:dist', 'notify:success']
+				tasks: [CSSCompiler + ':all', 'concat_sourcemap:dev', 'notify:success']
 			},
 
 			// What to do when JS files change
 			js: {
 				files: [assetsJSPath + '**/*.js'],
-				tasks: ['concat:dist', 'concat_sourcemap:dev', 'notify:success']
+				tasks: ['concat_sourcemap:dev', 'notify:success']
 			},
 
 			// What to do when CSS files change
@@ -332,7 +312,7 @@ module.exports = function(grunt) {
 			// What to do when SASS files change
 			sass: {
 				files: [assetsSASSPath + '**/*.scss', buildPath + 'config.rb'],
-				tasks: [CSSCompiler + ':dev', 'concat_sourcemap:dev', /*'concat:css', */'notify:success']
+				tasks: [CSSCompiler + ':all', 'notify:success']
 			},
 
 			// Refresh page when views change
@@ -358,9 +338,8 @@ module.exports = function(grunt) {
 		// Validate the environment
 		if (grunt.option('minify')) {
 			grunt.task.run(
-				CSSCompiler + ':dist',
-				'concat:css',
-				'concat:dist',
+				CSSCompiler + ':all',
+				'concat_sourcemap:dev',
 				'cssmin:all',
 				'uglify:all',
 				'notify:success'
@@ -368,9 +347,8 @@ module.exports = function(grunt) {
 
 		} else {
 			grunt.task.run(
-				CSSCompiler + ':dev',
-				'concat:css',
-				'concat:dist',
+				CSSCompiler + ':all',
+				'concat_sourcemap:dev',
 				'notify:success'
 			);
 		}
