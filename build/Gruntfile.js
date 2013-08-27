@@ -30,8 +30,8 @@ module.exports = function(grunt) {
 	};
 
 	var cssTargets = {
-		'styles': ['sass/styles.scss'],
-		'admin': ['sass/admin.scss']
+		'styles': 'sass/styles.scss',
+		'admin': 'sass/admin.scss'
 	};
 
 
@@ -71,15 +71,15 @@ module.exports = function(grunt) {
 	
 	/*
 	|--------------------------------------------------------------------------
-	| Compile sass files with compass or not.
+	| Use the compass or sass compiler.
 	|--------------------------------------------------------------------------
 	|
-	| The compass compiler currently doesn't have support for SourceMaps. When 
-	| useCompass is set to the false the sass compiler will be automatically used
-	| and the corresponding map files will be generated.
+	| The compass compiler currently doesn't have support for SourceMaps. Either
+	| use 'compass' || 'sass'. With the latter the Source Map files will be
+	| automatically generated.
 	|
 	*/
-	var useCompass = false;
+	var CSSCompiler = 'sass';
 
 
 	/*
@@ -99,11 +99,6 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks('grunt-contrib-connect');
 	grunt.loadNpmTasks('grunt-contrib-watch');
 	grunt.loadNpmTasks('grunt-concat-sourcemap');
-	
-	// Deprecated
-	grunt.loadNpmTasks('grunt-regarde');
-	//grunt.loadNpmTasks('grunt-contrib-livereload');
-
 
 
 	/*
@@ -116,12 +111,19 @@ module.exports = function(grunt) {
 	*/
 
 
-
 	/**
 	 * Replace the paths like sass/bla.scss with css/bla.css
 	 * 
 	 * @param  {string} path
+	 * @param {object} options, a list of options in an object
+	 *		extension {string}
+	 *		path {string} path to target
+	 *		minify {boolean}
+	 *			default: false, prepend 'min' to extension or not
+	 *		filename {function}, function to return new path to filename
+	 *			default: assetsPath + path
 	 * @return {string}
+	 * 
 	 */
 	function prepareTargets(targets, options) {
 
@@ -130,6 +132,9 @@ module.exports = function(grunt) {
 		var targetFilename = '';
 		var newTargets = {};
 		var extension = (options.minify ? '.min.' : '.') + options.extension;
+		var filename = function(path) {
+			return options.filename ? options.filename(path) : assetsPath + path;
+		}
 
 		// Loop through all targets and their files and do the replacement
 		for(var key in targets) {
@@ -138,12 +143,16 @@ module.exports = function(grunt) {
 			targetFilename = options.path + key + extension;
 			target = targets[key];
 
-			// Build a new array containing the files
-			newTargets[targetFilename] = [];
-			for(var i = 0; i < target.length; i++) {
-
-				// Convert the sass paths to temp paths
-				newTargets[targetFilename][i] = options.filename(target[i]);
+			if (typeof target === 'string') {
+				newTargets[targetFilename] = filename(target);
+			} else {
+				// Build a new array containing the files
+				newTargets[targetFilename] = [];
+				for (var i = 0; i < target.length; i++) {
+	
+					// Convert the sass paths to temp paths
+					newTargets[targetFilename][i] = filename(target[i]);
+				}
 			}
 		}
 		return newTargets;
@@ -153,47 +162,23 @@ module.exports = function(grunt) {
 		var newTargets = {};
 
 		// Loop through all targets
-		for(var key in targets) {
+		for (var key in targets) {
 			newTargets[key.replace('.' + options.extension, '.min.' + options.extension)] = [key];
 		}
 		return newTargets;
 	}
 
-	// Prepare CSSS and JS files 
+	// Prepare SCSS and JS files 
 	var cssFileTargets = prepareTargets(cssTargets, {
 		'extension': 'css',
-		'path': cssConcatPath,
-		'minify': false,
-		'filename': function (path) {
-			var sassPath = assetsSASSPath.replace(assetsPath, '');
-			var cssPath = cssTempPath.replace(assetsPath, '');
-			path = path.replace(sassPath, cssPath);
-			path = path.replace('.scss', '.css');
-			path = path.replace('.sass', '.css');
-			return assetsPath + path;
-		}
+		'path': cssConcatPath
 	});
 	var jsFileTargets = prepareTargets(jsTargets, {
 		'extension': 'js',
-		'path': jsConcatPath,
-		'minify': false,
-		'filename': function (path) {
-			return assetsPath + path;
-		}
+		'path': jsConcatPath
 	});
 	var jsFileMinTargets = prepareMinificationTargets(jsFileTargets, {extension: 'js'});
 	var cssFileMinTargets = prepareMinificationTargets(cssFileTargets, {extension: 'css'});
-
-
-
-	/**
-	 * Live reload setup
-	 */
-	/*var path = require('path');
-	var lrSnippet = require('grunt-contrib-livereload/lib/utils').livereloadSnippet;
-	var folderMount = function folderMount(connect, point) {
-		return connect.static(path.resolve(point));
-	};*/
 
 
 	/*
@@ -213,17 +198,14 @@ module.exports = function(grunt) {
 		 * @type {Object}
 		 */
 		sass: {
-			dev: {
-				files: [{
-					expand: true,
-					cwd: '../sass',
-					src: ['*.scss'],
-					dest: '../build/.temp/css',
-					ext: '.css'
-				}]
+			dist: {
+				
 			},
-			options: {
-				sourcemap: 'true'
+			dev: {
+				files: cssFileTargets,
+				options: {
+					sourcemap: 'true'
+				}
 			}
 		},
 
@@ -257,14 +239,13 @@ module.exports = function(grunt) {
 		 * @type {Object}
 		 */
 		concat: {
-			js: {
+			dist: {
 				options: {
-					separator: ';'
+					separator: ';\n\n'
 				},
 				files: jsFileTargets
 			},
 			css: {
-				files: cssFileTargets
 			}
 		},
 		
@@ -321,25 +302,6 @@ module.exports = function(grunt) {
 				}
 			}
 		},
-
-		/**
-		 * Live reload settings
-		 * 
-		 * @type {Object}
-		 */
-		/*livereload: {
-			port: 35729 // Default livereload listening port.
-		},
-		connect: {
-			livereload: {
-				options: {
-					port: 9001,
-					middleware: function(connect, options) {
-						return [lrSnippet, folderMount(connect, options.base)];
-					}
-				}
-			}
-		},*/
 		
 
 		/**
@@ -352,27 +314,25 @@ module.exports = function(grunt) {
 			// If the gruntfile itself changes, update all
 			grunt: {
 				files: ['Gruntfile.js'],
-				// tasks: ['compass:dev', 'concat:css', 'concat:js', 'livereload', 'notify:success']
-				tasks: ['sass:dev', 'concat:css', 'concat:js', 'notify:success']
+				tasks: [CSSCompiler + ':dev', /*'concat:css', */'concat:dist', 'notify:success']
 			},
 
 			// What to do when JS files change
 			js: {
 				files: [assetsJSPath + '**/*.js'],
-				tasks: ['concat:js', 'concat_sourcemap:dev', 'notify:success']
+				tasks: ['concat:dist', 'concat_sourcemap:dev', 'notify:success']
 			},
 
 			// What to do when CSS files change
-			css: {
-				files: [assetsCSSPath + '**/*.css'],
-				tasks: ['concat:css', 'notify:success']
-			},
+			//css: {
+			//	files: [assetsCSSPath + '**/*.css'],
+			//	tasks: ['concat:css', 'notify:success']
+			//},
 
 			// What to do when SASS files change
 			sass: {
 				files: [assetsSASSPath + '**/*.scss', buildPath + 'config.rb'],
-				// tasks: ['compass:dev', 'concat:css', 'livereload', 'notify:success']
-				tasks: ['sass:dev', 'concat_sourcemap:dev', 'concat:css', 'notify:success']
+				tasks: [CSSCompiler + ':dev', 'concat_sourcemap:dev', /*'concat:css', */'notify:success']
 			},
 
 			// Refresh page when views change
@@ -398,9 +358,9 @@ module.exports = function(grunt) {
 		// Validate the environment
 		if (grunt.option('minify')) {
 			grunt.task.run(
-				'compass:dist',
+				CSSCompiler + ':dist',
 				'concat:css',
-				'concat:js',
+				'concat:dist',
 				'cssmin:all',
 				'uglify:all',
 				'notify:success'
@@ -408,10 +368,9 @@ module.exports = function(grunt) {
 
 		} else {
 			grunt.task.run(
-				// 'compass:dev',
-				'sass:dev',
+				CSSCompiler + ':dev',
 				'concat:css',
-				'concat:js',
+				'concat:dist',
 				'notify:success'
 			);
 		}
