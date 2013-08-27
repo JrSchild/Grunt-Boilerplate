@@ -157,6 +157,10 @@ module.exports = function(grunt) {
 		return newTargets;
 	}
 
+	/**
+	 * Prepare paths to a minification path
+	 * 
+	 */
 	function prepareMinificationTargets(targets, options) {
 		var newTargets = {};
 
@@ -197,7 +201,13 @@ module.exports = function(grunt) {
 		 * @type {Object}
 		 */
 		sass: {
-			all: {
+			dist: {
+				files: cssFileTargets,
+				options: {
+					sourcemap: 'true'
+				}
+			},
+			dev: {
 				files: cssFileTargets,
 				options: {
 					sourcemap: 'true'
@@ -294,7 +304,7 @@ module.exports = function(grunt) {
 			// If the gruntfile itself changes, update all
 			grunt: {
 				files: ['Gruntfile.js'],
-				tasks: [CSSCompiler + ':all', 'concat_sourcemap:dev', 'notify:success']
+				tasks: [CSSCompiler + ':dev', 'concat_sourcemap:dev', 'notify:success']
 			},
 
 			// What to do when JS files change
@@ -312,7 +322,7 @@ module.exports = function(grunt) {
 			// What to do when SASS files change
 			sass: {
 				files: [assetsSASSPath + '**/*.scss', buildPath + 'config.rb'],
-				tasks: [CSSCompiler + ':all', 'notify:success']
+				tasks: [CSSCompiler + ':dev', 'notify:success']
 			},
 
 			// Refresh page when views change
@@ -338,7 +348,7 @@ module.exports = function(grunt) {
 		// Validate the environment
 		if (grunt.option('minify')) {
 			grunt.task.run(
-				CSSCompiler + ':all',
+				CSSCompiler + ':dist',
 				'concat_sourcemap:dev',
 				'cssmin:all',
 				'uglify:all',
@@ -347,7 +357,7 @@ module.exports = function(grunt) {
 
 		} else {
 			grunt.task.run(
-				CSSCompiler + ':all',
+				CSSCompiler + ':dist',
 				'concat_sourcemap:dev',
 				'notify:success'
 			);
