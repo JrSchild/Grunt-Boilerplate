@@ -1,0 +1,214 @@
+/**
+ * Layout settings
+ */
+/**
+ * Grid settings
+ */
+/**
+ * Section settings
+ */
+/**
+ * Paragraph settings
+ */
+/**
+ * Brand colors
+ */
+/**
+ * Content colors
+ */
+/**
+ * Menu colors
+ */
+/**
+ * Section colors
+ */
+/**
+ * GUI element colors
+ */
+/**
+ * Header colors
+ */
+/**
+ * Footer colors
+ */
+/**
+ * Language selector colors
+ */
+/**
+ * Project overview stuff
+ */
+/**
+ * Project meta information
+ */
+/**
+ * Project single page colors
+ */
+/**
+ * Client colors
+ */
+/**
+ * People colors
+ */
+/**
+ * Button colors
+ */
+/**
+ * Featured project colors
+ */
+/**
+ * Form element colors
+ */
+/**
+ * Gallery
+ */
+/**
+ * Default font styling for the site
+ */
+body {
+  font-family: 'Noto Sans', sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  background: white;
+  color: black; }
+
+/**
+ * Negative coloring
+ */
+.negative {
+  background: black;
+  color: white; }
+
+/**
+ * Header styling
+ */
+h1 {
+  font-family: 'Merriweather', serif;
+  font-size: 22px;
+  margin-bottom: 32px;
+  font-weight: 400; }
+
+h2 {
+  color: #666666;
+  font-size: 16px;
+  font-weight: 400; }
+
+h3 {
+  font-weight: 700;
+  margin-bottom: 6px; }
+
+/**
+ * Anchor styling
+ */
+a {
+  color: black;
+  text-decoration: none;
+  font-weight: bold; }
+  a:hover, a:active {
+    text-decoration: underline; }
+  .negative a {
+    color: white; }
+
+p {
+  line-height: 150%;
+  padding-bottom: 30px; }
+  p:last-child {
+    padding-bottom: 0; }
+  p.video-holder {
+    padding-bottom: inherit; }
+
+/**
+ * Generic gray rounded button
+ */
+.button {
+  display: inline-block;
+  border: 0;
+  cursor: pointer;
+  /**
+   * Gray button
+   */
+  /**
+   * Red dot button
+   */ }
+  .button.gray {
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+    -webkit-transition: color 0.1s linear;
+    -moz-transition: color 0.1s linear;
+    -ms-transition: color 0.1s linear;
+    -o-transition: color 0.1s linear;
+    transition: color 0.1s linear;
+    -webkit-transition: background-color 0.1s linear;
+    -moz-transition: background-color 0.1s linear;
+    -ms-transition: background-color 0.1s linear;
+    -o-transition: background-color 0.1s linear;
+    transition: background-color 0.1s linear;
+    font-size: 12px;
+    text-transform: uppercase;
+    font-weight: 700;
+    color: #cccccc;
+    background: #333333;
+    padding: 10px 16px;
+    margin-top: 12px;
+    /**
+     * Button on negative background
+     */
+    /**
+     * Hover states
+     */ }
+    .negative .button.gray {
+      color: #cccccc;
+      background: #333333; }
+    .button.gray:hover, .hover .button.gray {
+      background: #d81e05;
+      color: white;
+      text-decoration: none; }
+  .button.red {
+    font-family: 'Noto Sans', sans-serif;
+    font-size: 12px;
+    -webkit-transition: all 0.1s linear;
+    -moz-transition: all 0.1s linear;
+    -ms-transition: all 0.1s linear;
+    -o-transition: all 0.1s linear;
+    transition: all 0.1s linear;
+    background: url("../img/red_bullet.png") no-repeat 0 3px;
+    padding-left: 18px;
+    line-height: 100%;
+    color: #898989;
+    text-decoration: underline;
+    font-weight: normal;
+    /**
+     * Hover states
+     */ }
+    .button.red:hover, .hover .button.red {
+      color: black; }
+
+/**
+ * Quotes are bigger in font-size and have different typography
+ */
+.stylize {
+  font-family: 'Merriweather', serif;
+  font-size: 22px;
+  line-height: 150%; }
+
+/**
+ * Follow us buttons
+ */
+.follow_us {
+  padding-top: 5px; }
+  .follow_us a + a {
+    margin-left: 3px; }
+
+/**
+ * TinyMCE Styles
+ */
+#tinymce.wp-editor {
+  font-family: "Noto Sans", sans-serif;
+  font-size: 14px; }
+  #tinymce.wp-editor p {
+    margin: 0; }
+
+.wp_themeSkin .mceMenu td {
+  height: 36px; }
+
+/*# sourceMappingURL=tinymcecss.map */

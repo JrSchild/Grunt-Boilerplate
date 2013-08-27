@@ -1,0 +1,40 @@
+/**
+ * Define custom icons for every post type
+ */
+body {
+  /**
+   * Default menu icon 16x16
+   */
+  /**
+   * Hover menu icon
+   */
+  /**
+   * Edit page 32x32 icon
+   */ }
+  body #menu-posts-project .wp-menu-image {
+    background: url("../img/admin/post_type_icons_16.png") no-repeat 4px 5px !important; }
+  body #menu-posts-project:hover .wp-menu-image,
+  body #menu-posts-project.wp-menu-open .wp-menu-image {
+    background-position: 4px 5px !important; }
+  body #icon-edit.icon32-posts-project {
+    background: url("../img/admin/post_type_icons_32.png") 5px -1px no-repeat; }
+
+/**
+ * Styling for the credits widget
+ */
+#dashboard_sugarfree {
+  zoom: 1; }
+  #dashboard_sugarfree:before, #dashboard_sugarfree:after {
+    content: "\0020";
+    display: block;
+    height: 0;
+    overflow: hidden; }
+  #dashboard_sugarfree:after {
+    clear: both; }
+  #dashboard_sugarfree img {
+    float: left;
+    height: 70px; }
+  #dashboard_sugarfree .message {
+    padding-left: 15px; }
+
+/*# sourceMappingURL=admincss.map */
