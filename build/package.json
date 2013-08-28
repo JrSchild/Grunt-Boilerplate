@@ -1,13 +1,13 @@
 {
   "name": "buildscript",
   "version": "1.0.0",
-  "description": "Build script for Smokin Barrel theme",
+  "description": "Buildscript with basic modules",
   "main": "Gruntfile.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": "",
-  "author": "Laurent",
+  "author": "Joram Ruitenschild & Laurent van Dommelen",
   "license": "BSD",
   "devDependencies": {
     "grunt": "~0.4.1",
