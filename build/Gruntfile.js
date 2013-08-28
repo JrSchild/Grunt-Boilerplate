@@ -264,7 +264,7 @@ module.exports = function(grunt) {
 		cssmin: {
 			all: {
 				options: {
-					banner: '/* Build with Sugarfree assets package */'
+					banner: '/* Built with Grunt-Boilerplate (by Studio Sugarfree) */'
 				},
 				files: cssFileMinTargets
 			}
